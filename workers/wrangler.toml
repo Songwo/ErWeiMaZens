@@ -1,0 +1,14 @@
+name = "erweimazens"
+main = "src/index.ts"
+compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_compat"]
+
+[[kv_namespaces]]
+binding = "QR_KV"
+id = "2ec92606272443e5881460fd1e2d3f0b"
+preview_id = "2ec92606272443e5881460fd1e2d3f0b"
+
+[[kv_namespaces]]
+binding = "AUTH_KV"
+id = "53c2701fe7bc4d4fabe39885865bd9b1"
+preview_id = "53c2701fe7bc4d4fabe39885865bd9b1"
