@@ -140,9 +140,9 @@ https://erweimazens.your-subdomain.workers.dev
 
 | 配置项 | 值 |
 |--------|-----|
-| Framework preset | Next.js (SSR) |
+| Framework preset | Next.js (Static HTML Export) |
 | Build command | `cd frontend && npm install && npm run build` |
-| Build output directory | `frontend/.next` |
+| Build output directory | `frontend/out` |
 | Root directory | `/` |
 | Node version | 22 |
 
