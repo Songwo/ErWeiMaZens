@@ -18,7 +18,7 @@ interface VCardContact {
     isPrimary?: boolean
   }>
   urls: Array<{
-    type?: 'home' | 'work' | 'blog'
+    type?: 'home' | 'work' | 'blog' | 'other'
     url: string
   }>
   addresses: Array<{
