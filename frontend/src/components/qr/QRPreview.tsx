@@ -47,7 +47,9 @@ export default function QRPreview({ content, style, size = 280 }: Props) {
         cornersDotOptions: { type: style.cornersDotType },
         backgroundOptions: { color: style.background },
         imageOptions: { crossOrigin: 'anonymous', margin: 4 },
-        image: style.logoUrl ? `/api/proxy-image?url=${encodeURIComponent(style.logoUrl)}` : undefined,
+        image: style.logoUrl
+          ? `/api/proxy-image?${new URLSearchParams({ url: style.logoUrl }).toString()}`
+          : undefined,
       })
 
       qr.append(containerRef.current!)
