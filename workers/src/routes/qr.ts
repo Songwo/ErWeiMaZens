@@ -1,5 +1,5 @@
 import { Hono } from 'hono'
-import type { Env, QRCode, QRStyle, QRType, Session, LandingPage, GeoRule } from '../lib/types'
+import type { Env, QRCode, QRStyle, QRType, Session, LandingPage, GeoRule, TextStyle } from '../lib/types'
 import { authMiddleware } from '../middleware/auth'
 import { sha256 } from '../lib/auth'
 
@@ -26,7 +26,7 @@ qr.get('/', async (c) => {
 
 qr.post('/', async (c) => {
   const { userId } = c.get('session')
-  const { title, content, style, expireAt, qrType, password, landingPage, geoRules } = await c.req.json()
+  const { title, content, style, expireAt, qrType, password, landingPage, geoRules, textStyle } = await c.req.json()
 
   if (!title || !content) return c.json({ error: 'Title and content required' }, 400)
 
@@ -50,6 +50,7 @@ qr.post('/', async (c) => {
     scanCount: 0,
     createdAt: new Date().toISOString(),
     qrType: (qrType as QRType) ?? 'url',
+    textStyle: (textStyle as TextStyle) ?? undefined,
     scanLogs: [],
     passwordHash: password ? await sha256(password) : undefined,
     landingPage: landingPage ?? undefined,
@@ -146,6 +147,7 @@ qr.put('/:id', async (c) => {
     style: body.style ?? qrCode.style,
     expireAt: body.expireAt ?? qrCode.expireAt,
     qrType: body.qrType ?? qrCode.qrType,
+    textStyle: 'textStyle' in body ? (body.textStyle ?? undefined) : qrCode.textStyle,
     passwordHash: body.password ? await sha256(body.password) : (body.password === '' ? undefined : qrCode.passwordHash),
     landingPage: 'landingPage' in body ? (body.landingPage ?? undefined) : qrCode.landingPage,
     geoRules: 'geoRules' in body ? (body.geoRules ?? undefined) : qrCode.geoRules,

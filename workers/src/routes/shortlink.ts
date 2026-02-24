@@ -1,5 +1,5 @@
 import { Hono } from 'hono'
-import type { Env, QRCode, LandingPage } from '../lib/types'
+import type { Env, QRCode, LandingPage, TextStyle } from '../lib/types'
 import { sha256 } from '../lib/auth'
 
 const shortlink = new Hono<{ Bindings: Env }>()
@@ -45,6 +45,52 @@ ${lp.buttons.map(b => `<a href="${b.url}" class="${b.primary ? 'primary' : 'seco
 </div></body></html>`
 }
 
+function escapeHtml(input: string) {
+  return input
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+}
+
+function safeHexColor(input: string | undefined, fallback: string) {
+  if (!input) return fallback
+  return /^#[0-9a-fA-F]{6}$/.test(input) ? input : fallback
+}
+
+function textPageHtml(title: string, content: string, textStyle?: TextStyle) {
+  const safeTitle = escapeHtml(title || '文本二维码')
+  const safeContent = escapeHtml(content).replace(/\r?\n/g, '<br>')
+  const copyText = JSON.stringify(content)
+  const align = textStyle?.align ?? 'center'
+  const fontSize = Math.min(Math.max(textStyle?.fontSize ?? 20, 12), 48)
+  const maxWidth = Math.min(Math.max(textStyle?.maxWidth ?? 720, 320), 1200)
+  const fontWeight = textStyle?.bold ? 700 : 400
+  const border = textStyle?.bordered ? '1px solid #e2e8f0' : 'none'
+  const textColor = safeHexColor(textStyle?.textColor, '#0f172a')
+  const pageBgColor = safeHexColor(textStyle?.pageBgColor, '#f8fafc')
+  const cardBgColor = safeHexColor(textStyle?.cardBgColor, '#ffffff')
+
+  return `<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>${safeTitle}</title><style>
+*{box-sizing:border-box}body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;margin:0;min-height:100vh;background:${pageBgColor};color:${textColor};display:flex;align-items:center;justify-content:center;padding:1rem}
+.card{width:min(100%,${maxWidth}px);background:${cardBgColor};border-radius:1rem;padding:1.25rem 1rem;box-shadow:0 4px 24px rgba(2,6,23,.08);border:${border}}
+.title{margin:0 0 .75rem;font-size:1rem;color:#64748b}
+.content{margin:0;font-size:${fontSize}px;line-height:1.7;font-weight:${fontWeight};text-align:${align};word-break:break-word;white-space:normal;color:${textColor}}
+.copy{margin-top:1rem;padding:.5rem .75rem;border:1px solid #cbd5e1;background:transparent;border-radius:.5rem;cursor:pointer;font-size:.875rem}
+.copy:active{transform:translateY(1px)}
+</style></head><body><article class="card"><h1 class="title">${safeTitle}</h1><p class="content" id="qr-text">${safeContent}</p><button class="copy" id="copy-btn">复制内容</button></article>
+<script>
+const text=${copyText};
+const btn=document.getElementById('copy-btn');
+btn?.addEventListener('click', async ()=> {
+  try { await navigator.clipboard.writeText(text); btn.textContent='已复制'; setTimeout(()=>btn.textContent='复制内容',1200); }
+  catch { btn.textContent='复制失败'; setTimeout(()=>btn.textContent='复制内容',1200); }
+});
+</script></body></html>`
+}
+
 shortlink.get('/:id', async (c) => {
   const id = c.req.param('id')
   const data = await c.env.QR_KV.get(`qr:${id}`)
@@ -83,7 +129,14 @@ shortlink.get('/:id', async (c) => {
     return new Response(qrCode.content, {
       headers: { 'Content-Type': 'text/vcard; charset=utf-8', 'Content-Disposition': 'attachment; filename="contact.vcf"' },
     })
-  if (qrCode.qrType !== 'url') return c.text(qrCode.content)
+  if (qrCode.qrType === 'text') {
+    return c.html(textPageHtml(qrCode.title, qrCode.content, qrCode.textStyle), 200)
+  }
+  if (qrCode.qrType !== 'url') {
+    return new Response(qrCode.content, {
+      headers: { 'Content-Type': 'text/plain; charset=utf-8' },
+    })
+  }
 
   const url = qrCode.content
   if (!/^https?:\/\//i.test(url)) return c.html('<h1>Invalid URL</h1>', 400)

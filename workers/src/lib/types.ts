@@ -94,6 +94,17 @@ export interface VCardContact {
 
 export type QRType = 'url' | 'text' | 'wifi' | 'vcard'
 
+export interface TextStyle {
+  bold?: boolean
+  bordered?: boolean
+  align?: 'left' | 'center' | 'right'
+  fontSize?: number
+  maxWidth?: number
+  textColor?: string
+  pageBgColor?: string
+  cardBgColor?: string
+}
+
 export interface LandingButton { label: string; url: string; primary?: boolean }
 export interface LandingPage {
   title: string
@@ -121,6 +132,7 @@ export interface QRCode {
   scanCount: number
   createdAt: string
   qrType: QRType
+  textStyle?: TextStyle
   scanLogs: ScanLog[]
   passwordHash?: string
   landingPage?: LandingPage
