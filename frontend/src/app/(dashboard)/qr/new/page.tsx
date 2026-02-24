@@ -1,8 +1,10 @@
-import { getTranslations } from 'next-intl/server'
+'use client'
+
+import { useTranslations } from 'next-intl'
 import QRCreator from '@/components/qr/QRCreator'
 
-export default async function NewQRPage() {
-  const t = await getTranslations('qr')
+export default function NewQRPage() {
+  const t = useTranslations('qr')
   return (
     <div>
       <h1 className="text-2xl font-bold mb-6">{t('create_title')}</h1>

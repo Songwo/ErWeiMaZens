@@ -1,8 +1,10 @@
-import { getTranslations } from 'next-intl/server'
+'use client'
+
+import { useTranslations } from 'next-intl'
 import LoginForm from '@/components/auth/LoginForm'
 
-export default async function LoginPage() {
-  const t = await getTranslations('auth')
+export default function LoginPage() {
+  const t = useTranslations('auth')
   return (
     <div className="min-h-screen flex items-center justify-center bg-background">
       <div className="w-full max-w-md px-4">

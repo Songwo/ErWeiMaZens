@@ -1,8 +1,10 @@
-import { getTranslations } from 'next-intl/server'
+'use client'
+
+import { useTranslations } from 'next-intl'
 import BulkGenerator from '@/components/qr/BulkGenerator'
 
-export default async function BulkPage() {
-  const t = await getTranslations('qr')
+export default function BulkPage() {
+  const t = useTranslations('qr')
   return (
     <div>
       <h1 className="text-2xl font-bold mb-6">{t('bulk_title')}</h1>
