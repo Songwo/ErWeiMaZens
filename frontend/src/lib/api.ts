@@ -2,8 +2,9 @@ import type { QRCode, ScanLog, ApiKey, UserProfile } from './types'
 
 let redirecting = false
 
-// API base URL - use your Workers backend
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, '') ?? ''
+// Always use same-origin API routes in the browser.
+// Cloudflare Pages Functions will proxy /api/* to API_ORIGIN.
+const API_BASE_URL = ''
 
 function getToken() {
   return typeof window !== 'undefined' ? localStorage.getItem('session_token') : null
