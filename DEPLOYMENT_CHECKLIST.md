@@ -29,9 +29,9 @@
 在 Cloudflare Dashboard 中使用以下配置:
 
 ```
-Framework preset: Next.js
+Framework preset: None
 Build command: cd frontend && npm install && npm run build
-Build output directory: frontend/.next
+Build output directory: frontend/out
 Root directory: /
 Node version: 22
 ```

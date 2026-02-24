@@ -3,7 +3,7 @@ import type { QRCode, ScanLog, ApiKey, UserProfile } from './types'
 let redirecting = false
 
 // API base URL - use your Workers backend
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://erweimazens.zhaoqsnyah.workers.dev'
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, '') ?? ''
 
 function getToken() {
   return typeof window !== 'undefined' ? localStorage.getItem('session_token') : null
