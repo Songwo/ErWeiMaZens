@@ -2,6 +2,9 @@ import type { QRCode, ScanLog, ApiKey, UserProfile } from './types'
 
 let redirecting = false
 
+// API base URL - use your Workers backend
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://erweimazens.zhaoqsnyah.workers.dev'
+
 function getToken() {
   return typeof window !== 'undefined' ? localStorage.getItem('session_token') : null
 }
@@ -14,7 +17,10 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
   }
   if (token) headers['Authorization'] = `Bearer ${token}`
 
-  const res = await fetch(path, {
+  // Construct full URL with API base
+  const url = `${API_BASE_URL}${path}`
+
+  const res = await fetch(url, {
     credentials: 'include',
     headers,
     ...options,
