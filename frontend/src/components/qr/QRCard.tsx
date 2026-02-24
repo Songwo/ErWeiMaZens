@@ -115,7 +115,7 @@ export default function QRCard({ qr, folders, onDelete, onFolderChange }: Props)
             <Copy className="h-3.5 w-3.5 mr-1" />{t('copy')}
           </Button>
           <Button variant="outline" size="sm" asChild className="flex-1">
-            <Link href={`/qr/${qr.id}`}>
+            <Link href={`/qr/new?id=${encodeURIComponent(qr.id)}`}>
               <Edit className="h-3.5 w-3.5 mr-1" />{t('edit')}
             </Link>
           </Button>
