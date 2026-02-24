@@ -4,8 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
-    "postbuild": "echo 'Build complete'",
+    "build": "next build && node scripts/cleanup.js",
     "start": "next start",
     "lint": "next lint"
   },
