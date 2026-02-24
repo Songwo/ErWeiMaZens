@@ -1,0 +1,18 @@
+# Cloudflare Pages ignore file
+# Exclude cache and source files from deployment
+node_modules/
+.git/
+src/
+*.md
+tsconfig.json
+tailwind.config.ts
+postcss.config.js
+components.json
+pnpm-lock.yaml
+
+# Exclude Next.js cache (these files are huge and not needed for deployment)
+.next/cache/
+cache/
+
+# Exclude build artifacts that aren't needed
+.next/standalone/

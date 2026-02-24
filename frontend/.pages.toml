@@ -1,0 +1,7 @@
+# Cloudflare Pages configuration
+[build]
+command = "npm run build"
+directory = ".next"
+
+[build.environment]
+NODE_VERSION = "22"
